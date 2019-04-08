@@ -1,0 +1,2 @@
+# HUIMACS
+make BUILD=release
