@@ -15,7 +15,7 @@ __OPTIMIZEFLAG_2 = -O3 -march=native -m64
 endif
 
 OBJ      = main.o node.o ptable.o transaction.o acs.o
-BIN      = HUIMACS
+BIN      = HUIMSMMAS
 CXXFLAGS = $(CPPVERSION) $(__DEBUGINFO) $(__OPTIMIZEFLAG_2) -pipe -Wall -I include 
 
 .PHONY: all clean 
@@ -24,7 +24,7 @@ all: $(BIN)
 
 clean:
 	$(RM) lib/*.o
-	$(RM) HUIMACS
+	$(RM) HUIMSMMAS
 
 $(BIN): $(OBJ)
 	$(CXX) -o $@ $(__DEBUGINFO) $^
