@@ -137,7 +137,6 @@ void ACS::runIteration () {
 		Node::recurisivePrune(lCNode);
 	}
 	if (lBestItemset != nullptr) {
-		//Node::globalUpdate (*lBestItemset,r, rho);
 		delete lBestItemset;
 		lastFind = nIteration;
 	}
