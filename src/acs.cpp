@@ -106,8 +106,8 @@ void ACS::runIteration () {
 		cItemset.clear();
 		relatedTransactions.clear();
 		while (!lCNode->finish()) {
-			lCNode->localUpdate(rho, r);
 			lCNode = lCNode->selectNext(cItemset, alpha, beta, q0, pTable, 1.0);
+			lCNode->localUpdate(rho, r);
 			
 			if (!lCNode->calculated()) {
 				auto result = lDataset->calculateUtility(relatedTransactions, cItemset);
@@ -137,7 +137,7 @@ void ACS::runIteration () {
 		Node::recurisivePrune(lCNode);
 	}
 	if (lBestItemset != nullptr) {
-		Node::globalUpdate (*lBestItemset,r, rho);
+		//Node::globalUpdate (*lBestItemset,r, rho);
 		delete lBestItemset;
 		lastFind = nIteration;
 	}
