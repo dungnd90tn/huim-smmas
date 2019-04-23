@@ -10,12 +10,6 @@
 #include "acs.h"
 #include "cmdline.h"
 
-/* 
- * ===  FUNCTION  ======================================================================
- *         Name:  main
- *  Description:  
- * =====================================================================================
- */
 
 using namespace std;
 using namespace chrono;

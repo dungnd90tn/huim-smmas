@@ -39,7 +39,7 @@ namespace huimacs {
 			Node& operator = ( const Node &other ); /* assignment operator */
 
 			static void     recurisivePrune ( Node* node );
-			static void     globalUpdate ( const std::vector<int> itemset, bool r, const double& rho);
+			static void     globalUpdate ( const std::vector<int> itemset, const double& rho, const bool isBest);
 			static Node*    initStartNode ( const std::list<int>& iFollowingNodes, const double& initPheromone );
 			static void     deleteStartNode ();
 			static void     initTwoTWU ( const size_t& nCandidate );

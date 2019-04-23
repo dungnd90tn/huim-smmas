@@ -23,35 +23,12 @@ Transaction::Transaction ( const double& iThresholdRatio ) {
 	thresholdRatio = iThresholdRatio;
 }
 
-/*
- *--------------------------------------------------------------------------------------
- *       Class:  Transaction
- *      Method:  Transaction
- * Description:  copy constructor
- *--------------------------------------------------------------------------------------
- */
-//Transaction::Transaction ( const Transaction &other )
-//{
-//}  /* -----  end of method Transaction::Transaction  (copy constructor)  ----- */
 
-/*
- *--------------------------------------------------------------------------------------
- *       Class:  Transaction
- *      Method:  ~Transaction
- * Description:  destructor
- *--------------------------------------------------------------------------------------
- */
 Transaction::~Transaction ()
 {
 }  /* -----  end of method Transaction::~Transaction  (destructor)  ----- */
 
-/*
- *--------------------------------------------------------------------------------------
- *       Class:  Transaction
- *      Method:  operator =
- * Description:  assignment operator
- *--------------------------------------------------------------------------------------
- */
+
 	Transaction&
 Transaction::operator = ( const Transaction &other )
 {
@@ -61,35 +38,17 @@ Transaction::operator = ( const Transaction &other )
 }  /* -----  end of method Transaction::operator =  (assignment operator)  ----- */
 
 
-/*
- *--------------------------------------------------------------------------------------
- *       Class:  Transaction
- *      Method:  Transaction :: getThreshold
- * Description:  
- *--------------------------------------------------------------------------------------
- */
+
 const double& Transaction::getThreshold () const {
 	return threshold;
 }
 
-/*
- *--------------------------------------------------------------------------------------
- *       Class:  Transaction
- *      Method:  Transaction :: size
- * Description:  
- *--------------------------------------------------------------------------------------
- */
+
 size_t Transaction::size () const {
 	return data.size();
 }
 
-/*
- *--------------------------------------------------------------------------------------
- *       Class:  Transaction
- *      Method:  Transaction :: itemCount
- * Description:  
- *--------------------------------------------------------------------------------------
- */
+
 size_t Transaction::itemCount () const {
 	if (invertTable.front().size() == 0u)
 		return invertTable.size() - 1u;
@@ -97,13 +56,7 @@ size_t Transaction::itemCount () const {
 		return invertTable.size();
 }
 
-/*
- *--------------------------------------------------------------------------------------
- *       Class:  Transaction
- *      Method:  Transaction :: readData
- * Description:  
- *--------------------------------------------------------------------------------------
- */
+
 bool Transaction::readData ( const std::string& path ) {
 	ifstream file(path);
 	if (!file.is_open())
@@ -167,13 +120,7 @@ bool Transaction::readData ( const std::string& path ) {
 	return true;
 }
 
-/*
- *--------------------------------------------------------------------------------------
- *       Class:  Transaction
- *      Method:  Transaction :: calculateUtility
- * Description:  
- *--------------------------------------------------------------------------------------
- */
+
 tuple<unsigned, bool, bool, unsigned> Transaction::calculateUtility ( list<unsigned>& relatedTransaction, const vector<int>& cItemset ) {
 	unsigned name = cItemset.back();
 	unsigned utility = 0u;

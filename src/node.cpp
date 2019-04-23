@@ -23,18 +23,8 @@ double Tmin;
 double k;
 int numberNode;
 double checkP;
-//double deltaT;
 
-/*
- *--------------------------------------------------------------------------------------
- *       Class:  Node
- *      Method:  Node
- * Description:  constructor
- *--------------------------------------------------------------------------------------
- */
-//Node::Node ()
-//{
-//}  /* -----  end of method Node::Node  (constructor)  ----- */
+
 
 Node::Node ( Node* iLParentNode, const int& iName, const list<int>& iFollowingNodes, const double& initPheromone ) {
 	lParentNode          = iLParentNode;
@@ -49,24 +39,7 @@ Node::Node ( Node* iLParentNode, const int& iName, const list<int>& iFollowingNo
 	}
 }
 
-/*
- *--------------------------------------------------------------------------------------
- *       Class:  Node
- *      Method:  Node
- * Description:  copy constructor
- *--------------------------------------------------------------------------------------
- */
-//Node::Node ( const Node &other )
-//{
-//}  /* -----  end of method Node::Node  (copy constructor)  ----- */
 
-/*
- *--------------------------------------------------------------------------------------
- *       Class:  Node
- *      Method:  ~Node
- * Description:  destructor
- *--------------------------------------------------------------------------------------
- */
 Node::~Node ()
 {
 	for (auto& i : remainNodes) {
@@ -74,52 +47,28 @@ Node::~Node ()
 			delete i.second;
 		
 	}
-}  /* -----  end of method Node::~Node  (destructor)  ----- */
+}  
 
-/*
- *--------------------------------------------------------------------------------------
- *       Class:  Node
- *      Method:  operator =
- * Description:  assignment operator
- *--------------------------------------------------------------------------------------
- */
+
 Node&
 Node::operator = ( const Node &other )
 {
 	if (this != &other) {
 	}
 	return *this;
-}  /* -----  end of method Node::operator =  (assignment operator)  ----- */
+}  
 
-/*
- *--------------------------------------------------------------------------------------
- *       Class:  Node
- *      Method:  Node :: getStartNode
- * Description:  
- *--------------------------------------------------------------------------------------
- */
+
 const Node* Node::getStartNode () {
 	return Node::lStartNode;
 }
 
-/*
- *--------------------------------------------------------------------------------------
- *       Class:  Node
- *      Method:  Node :: getName
- * Description:  
- *--------------------------------------------------------------------------------------
- */
+
 int Node::getName () const {
 	return name;
 }
 
-/*
- *--------------------------------------------------------------------------------------
- *       Class:  Node
- *      Method:  Node :: getPheromone
- * Description:  
- *--------------------------------------------------------------------------------------
- */
+
 double Node::getPheromone () const {
 	return pheromone;
 }
@@ -128,13 +77,7 @@ double Node::printPheromone () {
 	return checkP;
 }
 
-/*
- *--------------------------------------------------------------------------------------
- *       Class:  Node
- *      Method:  Node :: positiveDeleteFolloingNode
- * Description:  
- *--------------------------------------------------------------------------------------
- */
+
 void  Node::positivePrue ( const vector<int> itemset, const PTable& pTable ) {
 	if (maxCheckPTable < pTable.maxVersion()) {
 		list<list<pair<int, Node*>>::iterator> locationRecord;
@@ -153,34 +96,17 @@ void  Node::positivePrue ( const vector<int> itemset, const PTable& pTable ) {
 	}
 }
 
-/*
- *--------------------------------------------------------------------------------------
- *       Class:  Node
- *      Method:  Node :: localUpdate
- * Description:  
- *
- *--------------------------------------------------------------------------------------
- */
-void Node::localUpdate (const double& rho, bool r) {
-	if(r){
+
+void Node::localUpdate(const double& rho, const bool isBest){
+ 	if(isBest){
 		pheromone = pheromone * (1.0 - rho) + rho*Tmax;
 	}
-	else{
+	else {
 		pheromone = pheromone * (1.0 - rho) + rho*Tmin;
 	}
-	//if(pheromone > 1.0) pheromone -= 1.0;
-	checkP = pheromone;
 }
 
-/*
- *--------------------------------------------------------------------------------------
- *       Class:  Node
- *      Method:  Node :: globalUpdate
- * Description:  
- *
- *--------------------------------------------------------------------------------------
- */
-void Node::globalUpdate ( const vector<int> itemset, bool r, const double& rho) {
+void Node::globalUpdate ( const vector<int> itemset, const double& rho, const bool isBest) {
 	Node* lNode = Node::lStartNode;
 	bool find;
 
@@ -192,10 +118,10 @@ void Node::globalUpdate ( const vector<int> itemset, bool r, const double& rho) 
 				if (i == lFNode->getName()) {
 					find = true;
 					lNode = lFNode;
-					lNode->addPheromone(rho, r);
+					lNode->addPheromone(rho, isBest);
 					break;
-				}
-				else
+				} 
+				else 
 					break;
 			}
 		}
@@ -204,69 +130,33 @@ void Node::globalUpdate ( const vector<int> itemset, bool r, const double& rho) 
 	}
 }
  
-/*
- *--------------------------------------------------------------------------------------
- *       Class:  Node
- *      Method:  Node :: initStartNode
- * Description:  
- *--------------------------------------------------------------------------------------
- */
+
 Node* Node::initStartNode ( const list<int>& iFollowingNodes, const double& initPheromone ) {
 	Node::lStartNode = new Node(nullptr, -1, iFollowingNodes, initPheromone);
 	return Node::lStartNode;
 }
 
-/*
- *--------------------------------------------------------------------------------------
- *       Class:  Node
- *      Method:  Node :: deleteStartNode
- * Description:  
- *--------------------------------------------------------------------------------------
- */
+
 void Node::deleteStartNode () {
 	if (Node::lStartNode != nullptr) delete Node::lStartNode;
 }
 
-/*
- *--------------------------------------------------------------------------------------
- *       Class:  Node
- *      Method:  Node :: finish
- * Description:  
- *--------------------------------------------------------------------------------------
- */
+
 bool Node::finish () {
 	return (remainNodes.size() == 0u);
 }
 
-/*
- *--------------------------------------------------------------------------------------
- *       Class:  Node
- *      Method:  Node :: calculated
- * Description:  
- *--------------------------------------------------------------------------------------
- */
+
 bool Node::calculated () {
 	return calculate;
 }
 
-/*
- *--------------------------------------------------------------------------------------
- *       Class:  Node
- *      Method:  Node :: setCalculated
- * Description:  
- *--------------------------------------------------------------------------------------
- */
+
 void Node::setCalculated () {
 	calculate = true;
 }
 
-/*
- *--------------------------------------------------------------------------------------
- *       Class:  Node
- *      Method:  Node :: selectNext
- * Description:  
- *--------------------------------------------------------------------------------------
- */
+
 Node* Node::selectNext ( vector<int>& cItemset, const double& alpha, const double& beta, const double& q0, const PTable& pTable, const double& initPheromone ) {
 	if (cItemset.size() > 1u)
 		positivePrue(cItemset, pTable);
@@ -328,7 +218,7 @@ Node* Node::selectNext ( vector<int>& cItemset, const double& alpha, const doubl
 			if (get<3>(i) > maxWeight) {
 			maxWeight = get<3>(i);
 			iSelectedNode = get<0>(i);
-        	}
+        }
 	}
 
 	if (iSelectedNode->second == nullptr) {
@@ -345,45 +235,22 @@ Node* Node::selectNext ( vector<int>& cItemset, const double& alpha, const doubl
 	return iSelectedNode->second;
 }
 
-/*
- *--------------------------------------------------------------------------------------
- *       Class:  Node
- *      Method:  Node :: clearFollowing
- * Description:  
- *--------------------------------------------------------------------------------------
- */
+
 void  Node::clearRemainNodes () {
 	remainNodes.clear();
 }
 
-/*
- *--------------------------------------------------------------------------------------
- *       Class:  Node
- *      Method:  Node :: setRelatedTransactions
- * Description:  
- *--------------------------------------------------------------------------------------
- */
+
 void  Node::setRelatedTransactions ( const list<unsigned> transactions ) {
 	relatedTransactions = transactions;
 }
 
-/*
- *--------------------------------------------------------------------------------------
- *       Class:  Node
- *      Method:  Node :: getRelatedTransactions
- * Description:  
- *--------------------------------------------------------------------------------------
- */
+
 list<unsigned> Node::getRelatedTransactions () {
 	return relatedTransactions;
 }
-/*
- *--------------------------------------------------------------------------------------
- *       Class:  Node
- *      Method:  Node :: initTwoTWU
- * Description:  
- *--------------------------------------------------------------------------------------
- */
+
+
 void Node::initTwoTWU ( const size_t& nCandidate ) {
 	//due to positive prunning rule, we can set 0u for pair itemset which is never arrived
 	twoTWU.resize((nCandidate * (nCandidate - 1)) / 2, 0u);
@@ -391,25 +258,12 @@ void Node::initTwoTWU ( const size_t& nCandidate ) {
 	CalTmin();
 }
 
-/*
- *--------------------------------------------------------------------------------------
- *       Class:  Node
- *      Method:  Node :: setLOneTWU
- * Description:  
- *--------------------------------------------------------------------------------------
- */
+
 void Node::setLOneTWU ( vector<Transaction::oneTWU>* ILOneTWU ) {
 	lOneTWU = ILOneTWU;
 }
 
 
-/*
- *--------------------------------------------------------------------------------------
- *       Class:  Node
- *      Method:  Node :: setCandidateIndex
- * Description:  
- *--------------------------------------------------------------------------------------
- */
 void Node::setCandidateIndex () {
 	indexTable.resize(sizeIndexTable);
 	for (size_t i = 0u; i < lOneTWU->size(); ++i) {
@@ -418,13 +272,7 @@ void Node::setCandidateIndex () {
 	}
 }
 
-/*
- *--------------------------------------------------------------------------------------
- *       Class:  Node
- *      Method:  Node :: getCandidateIndex
- * Description:  
- *--------------------------------------------------------------------------------------
- */
+
 unsigned Node::getCandidateIndex ( const unsigned& name ) {
 	unsigned lot = name % sizeIndexTable;
 	for (const auto& i : indexTable[lot]) {
@@ -434,25 +282,14 @@ unsigned Node::getCandidateIndex ( const unsigned& name ) {
 	return (unsigned)lOneTWU->size();
 }
 
-/*
- *--------------------------------------------------------------------------------------
- *       Class:  Node
- *      Method:  Node :: inputTwoTWU
- * Description:  
- *--------------------------------------------------------------------------------------
- */
+
 void Node::inputTwoTWU ( const int& name1, const int& name2, const unsigned& utility ) {
 	unsigned index1 = getCandidateIndex(name1);
 	unsigned index2 = getCandidateIndex(name2);
 	twoTWU[index1 * (*lOneTWU).size() + index2 - (index1 + 2) * (index1 + 1) / 2] = utility;
 }
-/*
- *--------------------------------------------------------------------------------------
- *       Class:  Node
- *      Method:  Node :: recursivePrune
- * Description:  
- *--------------------------------------------------------------------------------------
- */
+
+
 void Node::recurisivePrune ( Node* node ) {
 	Node* lPreviousNode = node->getLParentNode();
 	lPreviousNode->deleteFollowingNode(node);
@@ -461,13 +298,7 @@ void Node::recurisivePrune ( Node* node ) {
 		recurisivePrune(lPreviousNode);
 }
 
-/*
- *--------------------------------------------------------------------------------------
- *       Class:  Node
- *      Method:  Node :: deleteFollowingNode
- * Description:  
- *--------------------------------------------------------------------------------------
- */
+
 void Node::deleteFollowingNode ( Node* lNode ) {
 	for (auto i = remainNodes.begin(); i != remainNodes.end(); ++i) {
 		if (i->first == lNode->getName()) {
@@ -477,24 +308,11 @@ void Node::deleteFollowingNode ( Node* lNode ) {
 	}
 }
 
-/*
- *--------------------------------------------------------------------------------------
- *       Class:  Node
- *      Method:  Node :: getLParentNode
- * Description:  
- *--------------------------------------------------------------------------------------
- */
+
 Node* Node::getLParentNode () {
 	return lParentNode;
 }
 
-/*
- *--------------------------------------------------------------------------------------
- *       Class:  PTable
- *      Method:  PTable :: addPheromone
- * Description:  
- *--------------------------------------------------------------------------------------
- */
 
  void Node::addPheromone (const double& rho, bool r) {
  	if(r){
@@ -517,9 +335,11 @@ void Node::CalTmin(){
 	Tmin = Tmax / (numberNode * k);
 	//End Calculate Tmax/Tmin
 }
+
 double Node::getTmin(){
 	return Tmin;
 }
+
 int Node::getNumberNode(){
 	return numberNode;
 }

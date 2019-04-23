@@ -3,17 +3,7 @@
 using namespace huimacs;
 using namespace std;
 
-/*
- *--------------------------------------------------------------------------------------
- *       Class:  ACS
- *      Method:  ACS
- * Description:  constructor
- *--------------------------------------------------------------------------------------
- */
-//ACS::ACS ()
-//{
-//}  /* -----  end of method ACS::ACS  (constructor)  ----- */
-//
+
 ACS::ACS ( const unsigned& iSize, Transaction* iLDataset, Node* iLSNode, double iInitialPheromone, double iRho, const double& iAlpha, const double& iBeta, const double& iQ0 ) {
 	nIteration     = 1u;
 	populationSize = iSize;
@@ -26,72 +16,32 @@ ACS::ACS ( const unsigned& iSize, Transaction* iLDataset, Node* iLSNode, double 
 	q0             = iQ0;
 }
 
-/*
- *--------------------------------------------------------------------------------------
- *       Class:  ACS
- *      Method:  ACS
- * Description:  copy constructor
- *--------------------------------------------------------------------------------------
- */
-//ACS::ACS ( const ACS &other )
-//{
-//}  /* -----  end of method ACS::ACS  (copy constructor)  ----- */
 
-/*
- *--------------------------------------------------------------------------------------
- *       Class:  ACS
- *      Method:  ~ACS
- * Description:  destructor
- *--------------------------------------------------------------------------------------
- */
 ACS::~ACS ()
 {
-}  /* -----  end of method ACS::~ACS  (destructor)  ----- */
+}  
 
-/*
- *--------------------------------------------------------------------------------------
- *       Class:  ACS
- *      Method:  operator =
- * Description:  assignment operator
- *--------------------------------------------------------------------------------------
- */
-	ACS&
+
+ACS&
 ACS::operator = ( const ACS &other )
 {
 	if ( this != &other ) {
 	}
 	return *this;
-}  /* -----  end of method ACS::operator =  (assignment operator)  ----- */
+}  
 
 
-/*
- *--------------------------------------------------------------------------------------
- *       Class:  ACS
- *      Method:  ACS :: getNIteration
- * Description:  
- *--------------------------------------------------------------------------------------
- */
+
 unsigned ACS::getNIteration () {
 	return nIteration;
 }
 
-/*
- *--------------------------------------------------------------------------------------
- *       Class:  ACS
- *      Method:  ACS :: getLastFind
- * Description:  
- *--------------------------------------------------------------------------------------
- */
+
 unsigned ACS::getLastFind () {
 	return lastFind;
 }
-/*
- *--------------------------------------------------------------------------------------
- *       Class:  ACS
- *      Method:  ACS :: runIteration
- * Description:  
- *--------------------------------------------------------------------------------------
- */
+
+
 void ACS::runIteration () {
 	Node* lCNode;
 	vector<int>    cItemset;
@@ -99,16 +49,15 @@ void ACS::runIteration () {
 	unsigned       bestUtility  = 0u;
 
 	list<unsigned> relatedTransactions;
-	bool r = false;
+	bool isBest;
 
 	for (unsigned i = 0u; i < populationSize; ++i) {
 		lCNode = lSNode;
 		cItemset.clear();
 		relatedTransactions.clear();
 		while (!lCNode->finish()) {
-			lCNode = lCNode->selectNext(cItemset, alpha, beta, q0, pTable, 1.0);
-			lCNode->localUpdate(rho, r);
-			
+			lCNode = lCNode->selectNext(cItemset, alpha, beta, q0, pTable, initPheromone);
+
 			if (!lCNode->calculated()) {
 				auto result = lDataset->calculateUtility(relatedTransactions, cItemset);
 				lCNode->setRelatedTransactions(relatedTransactions);
@@ -119,26 +68,29 @@ void ACS::runIteration () {
 						if (lBestItemset != nullptr){
 						 	delete lBestItemset;
 						} 
-						r = true;
 						lBestItemset = new vector<int>(cItemset);
-					}
-				} else if (!get<2>(result)) {
-					r = false;
+					} 
+				} else if (!get<2>(result)) {					
 					pTable.insertRecord(cItemset);
 					lCNode->clearRemainNodes();
-				} 
+				} else {
+					lCNode->localUpdate(rho, isBest);
+				}
 				if (cItemset.size() == 2u) Node::inputTwoTWU(cItemset.front(), cItemset.back(), get<3>(result));
 				lCNode->setCalculated();
 			} else {
 				relatedTransactions = lCNode->getRelatedTransactions();
 			}
+			
 		}
+
 		if (lCNode->getName() == -1) break;
 		Node::recurisivePrune(lCNode);
 	}
 	if (lBestItemset != nullptr) {
+		Node::globalUpdate (*lBestItemset, rho, true);
 		delete lBestItemset;
 		lastFind = nIteration;
-	}
+	} 
 	++nIteration;
 }
