@@ -328,24 +328,9 @@ Node* Node::selectNext ( vector<int>& cItemset, const double& alpha, const doubl
 			if (get<3>(i) > maxWeight) {
 			maxWeight = get<3>(i);
 			iSelectedNode = get<0>(i);
-        }
+        	}
 	}
-//	default_random_engine random((unsigned)time(NULL));
-//	uniform_real_distribution<double> dis(0.0, 1.0);
-//	if (dis(random) >= q0) {
-//		//roulette wheel selection
-//		uniform_real_distribution<double> dis2(0.0, totalWeight);
-//		double length = dis2(random);
-//		auto ball = weightTable.begin();
-//		do {
-//			length -= get<3>(*ball);
-//			if (length <= 0.0) {
-//				iSelectedNode = get<0>(*ball);
-//			} else {
-//				++ball;
-//			}
-//		} while (length > 0.0);
-//	}
+
 	if (iSelectedNode->second == nullptr) {
 		list<int> sFollowingNodes;
 		auto it = find(followingNodes.begin(), followingNodes.end(), iSelectedNode->first);
